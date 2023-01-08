@@ -18,15 +18,14 @@ class OurDomainCrawler():
         
         print("Iterate over rows")
         for i in range(len(data_arr)):
-            prop_name = data_arr[i].find_element(By.XPATH, "//td[@data-label='Floor Plan']")
-            availability = data_arr[i].find_element(By.XPATH, "//td[@data-label='Availability']")
-
+            prop_name = data_arr[i].find_element(By.XPATH, f"//td[@data-label='Floor Plan'][@data-selenium-id='FPlan_{str(i+1)}']")
+            availability = data_arr[i].find_element(By.XPATH, f"//td[@data-label='Availability'][@data-selenium-id='Availability_{str(i+1)}']")
             data_dict = self.parse_data({
                 "prop_name": prop_name.get_attribute('outerHTML'), 
                 "availability": availability.get_attribute('outerHTML')
                 })
             print(data_dict)
-    
+
     def parse_data(self, data_el):
         prop = data_el["prop_name"]
         avail = data_el["availability"]
