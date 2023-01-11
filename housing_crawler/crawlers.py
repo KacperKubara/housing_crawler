@@ -1,5 +1,7 @@
-import time 
 from selenium.webdriver.common.by import By
+import yagmail
+
+import time 
 import re
 
 
@@ -8,7 +10,8 @@ class OurDomainCrawler():
         self.driver = driver
         self.result_dict = {}
         self.URL_BASE = "https://southeast-thisisourdomain.securerc.co.uk/onlineleasing/ourdomain-amsterdam-south-east/floorplans.aspx?"
-
+        self.yag = yagmail.SMTP('shukakaciupaga1', 'xqumputsinsfharm')
+        
     def run(self):
         self.driver.get(self.URL_BASE)
         time.sleep(1)
@@ -23,10 +26,11 @@ class OurDomainCrawler():
                 "prop_name": prop_name.get_attribute('outerHTML'), 
                 "availability": availability.get_attribute('outerHTML')
                 })
-            if "notified" not in data_dict["availability"].lower():
-                self.result_dict[data_dict["prop_name"]] = data_dict["availability"]
+            if "notified" not in data_dict["avail_str"].lower():
+                self.result_dict[data_dict["prop_name"]] = data_dict["avail_str"]
             print(data_dict)
-                
+        
+        self.result_dict = {"chuj": "test"}
         if self.result_dict:
             print("Sending email")
             self.send_email_to_me(self.result_dict)
@@ -41,3 +45,7 @@ class OurDomainCrawler():
             "prop_name": prop_str,
             "avail_str": avail_str
             }
+
+    def send_email_to_me(self, result_dict):
+        body_text = f"Hi mate, go to URL: {self.URL_BASE} \n\n There seems to be something there: {str(result_dict)}"
+        self.yag.send('kacper.kubara.ai@gmail.com', 'Housing notification', body_text)
